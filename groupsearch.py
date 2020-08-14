@@ -22,7 +22,7 @@ get list of domains
 """
 def get_domains(ip_addr):
     domain_list = []
-    end = "\n"
+    end = "<br>"
     debug = 0
 
     try:
@@ -56,11 +56,11 @@ sid can be passed in as a sid if we're calling this recursive
 """
 def search_cma(mds_ip, cma_ip, group_name, recur = 0, sid = ""):
     debug = 0
-    end = "\n"
+    end = "<br>"
 
     marker = ""
     for m in range(recur):
-        marker = marker + "\t"
+        marker = marker + "*"
 
     try:
         if(sid == ""):
@@ -73,6 +73,10 @@ def search_cma(mds_ip, cma_ip, group_name, recur = 0, sid = ""):
         
         check_name = {"order" : [{"ASC" : "name"}], "in" : ["name", group_name] }
         chkname = apifunctions.api_call(mds_ip, "show-objects", check_name, cma_sid)
+
+        if(debug == 1):
+            print(json.dumps(chkname), end=end)
+            print("__", end=end)
 
         if(chkname['total'] == 0):
             print("No Object found", end=end)
@@ -127,16 +131,33 @@ def search_cma(mds_ip, cma_ip, group_name, recur = 0, sid = ""):
 #end of search_cma
 
 def main():
-    end = "\n"
+    end = "<br>"
 
-    mds_ip = "146.18.96.16"
+    #create instance of Field Storage
+    form = cgi.FieldStorage()
+    grp_to_find = form.getvalue('grp2find')
+
+
+    ## html header and config data dump
+    print("Content-type:text/html\r\n\r\n", end=end)
+    print("<html>", end=end)
+    print("<head>", end=end)
+    print("<title>Group_Search</title>", end=end)
+    print("</head>", end=end)
+    print("<body>", end=end)
+    print("<br><br>", end=end)
+    print("Search Groups 0.1", end=end)
+
+    mds_ip = "192.168.159.150"
     domain_list = get_domains(mds_ip)
-
-    grp_to_find = "hublab-subnets"
 
     for x in domain_list:
         print("Searching CMA : " + x, end=end)
         search_cma(mds_ip, x, grp_to_find)
+    
+    print("", end=end)
+    print("</body>", end=end)
+    print("</html>", end=end)
 #end of main
 
 if __name__ == "__main__":
