@@ -85,7 +85,9 @@ def search_cma(mds_ip, cma_ip, group_name, recur = 0, sid = ""):
                 if(chkname['objects'][x]['type'] == "group"):
                     print(marker + chkname['objects'][x]['name'], end=end)
 
-                    get_group_data = {"name" : group_name}
+                    #error loged.  this returns search name instead of group name in use.
+                    ##get_group_data = {"name" : group_name}
+                    get_group_data = {"name" : chkname['objects'][x]['name']}
                     group_contents = apifunctions.api_call(mds_ip, "show-group", get_group_data, cma_sid)
 
                     if(debug == 1):
